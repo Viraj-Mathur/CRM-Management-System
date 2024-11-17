@@ -52,10 +52,6 @@ Thumbs.db
 .idea/
 *.iml
 
-# Ignore specific React files
-serviceWorker.js
-reportWebVitals.js
-
 # Ignore generated files
 *.map
 
