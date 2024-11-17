@@ -1,0 +1,15 @@
+GRANT ALL PRIVILEGES ON crm.* TO 'viraj'@'localhost';
+mysql -u viraj -p
+
+CREATE USER 'viraj'@'localhost' IDENTIFIED BY 'Viraj@12345';
+
+USE crm;
+
+
+mysql -u viraj -p -h 127.0.0.1
+
+
+{"web":{"client_id":"463673920690-5aciv2322opvor18a1a5e2nk7mt8uq4q.apps.googleusercontent.com","project_id":"crm-project-441409","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"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","javascript_origins":["http://localhost:3000"]}}
+
+GRANT ALL PRIVILEGES ON *.* TO 'viraj'@'127.0.0.1';
+FLUSH PRIVILEGES;
