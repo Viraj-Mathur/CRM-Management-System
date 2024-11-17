@@ -1,0 +1,65 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+
+# Build output
+build/
+dist/
+
+# Cache directories
+.cache/
+.next/
+
+# Testing
+coverage/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+~$*
+
+# MacOS resource forks
+.DS_Store
+._*
+
+# Ignore IntelliJ IDE project files
+.idea/
+*.iml
+
+# Ignore specific React files
+serviceWorker.js
+reportWebVitals.js
+
+# Ignore generated files
+*.map
+
+# Ignore lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
