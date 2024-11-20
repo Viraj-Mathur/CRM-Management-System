@@ -57,7 +57,7 @@ exports.sendCampaignMessages = async (req, res) => {
 
           // Call Delivery Receipt API to update status
         //   await axios.post(`http://localhost:3000/api/messages/delivery-receipt/${logId}`);
-        await axios.post(`https://crm-management-system-1.onrender.com//api/messages/delivery-receipt/${logId}`);
+        await axios.post(`https://crm-management-system-1.onrender.com/api/messages/delivery-receipt/${logId}`);
       }
 
       res.status(200).json({ message: 'Messages sent and delivery statuses updated successfully' });
