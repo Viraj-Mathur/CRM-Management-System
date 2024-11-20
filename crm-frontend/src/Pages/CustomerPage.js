@@ -19,7 +19,7 @@ const CustomerPage = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/customers');
+      const response = await axios.get('https://crm-management-system-1.onrender.com/api/customers');
       setCustomers(response.data);
       setFilteredCustomers(response.data);
     } catch (error) {
@@ -40,8 +40,8 @@ const CustomerPage = () => {
     try {
       const method = customer.id ? 'PUT' : 'POST';
       const url = customer.id 
-        ? `http://localhost:3000/api/customers/${customer.id}`
-        : 'http://localhost:3000/api/customers';
+        ? `https://crm-management-system-1.onrender.com/api/customers/${customer.id}`
+        : 'https://crm-management-system-1.onrender.com/api/customers';
       
       const response = await axios({
         method,
@@ -63,7 +63,7 @@ const CustomerPage = () => {
 
   const handleDeleteCustomer = async (customerId) => {
     try {
-      const response = await axios.delete(`http://localhost:3000/api/customers/${customerId}`);
+      const response = await axios.delete(`https://crm-management-system-1.onrender.com/api/customers/${customerId}`);
       if (response.status === 200) {
         fetchCustomers();
       } else {

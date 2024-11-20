@@ -19,7 +19,8 @@ export default function MessageLogsPage() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:3000/api/messages/logs?campaignId=${id}`
+          // `http://localhost:3000/api/messages/logs?campaignId=${id}`
+          `https://crm-management-system-1.onrender.com/api/messages/logs?campaignId=${id}`
         );
         const logs = response.data;
 
@@ -49,11 +50,11 @@ export default function MessageLogsPage() {
   const retryMessage = async (logId) => {
     try {
       await axios.post(
-        `http://localhost:3000/api/messages/delivery-receipt/${logId}`
+        `https://crm-management-system-1.onrender.com/api/messages/delivery-receipt/${logId}`
       );
       alert("Message retried successfully!");
       const response = await axios.get(
-        `http://localhost:3000/api/messages/logs?campaignId=${id}`
+        `https://crm-management-system-1.onrender.com/api/messages/logs?campaignId=${id}`
       );
       setMessageLogs(response.data);
     } catch (error) {
@@ -67,14 +68,14 @@ export default function MessageLogsPage() {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:3000/api/messages/send",
+        "https://crm-management-system-1.onrender.com/api/messages/send",
         { campaignId: id }
       );
 
       if (response.status === 200) {
         alert(response.data.message); // Show success message
         const logsResponse = await axios.get(
-          `http://localhost:3000/api/messages/logs?campaignId=${id}`
+          `https://crm-management-system-1.onrender.com/sapi/messages/logs?campaignId=${id}`
         );
         setMessageLogs(logsResponse.data);
       } else {
@@ -101,7 +102,7 @@ export default function MessageLogsPage() {
       {/* Campaign Statistics */}
       <div className="mb-4 p-4 bg-gray-100 border rounded">
         <h2 className="text-2xl font-semibold mb-2">Campaign Statistics</h2>
-        <p><strong>Total Customers:</strong> {statistics.totalCustomers}</p>
+        <p><strong>Total Messages Sent:</strong> {statistics.totalCustomers}</p>
         <p><strong>Messages Sent:</strong> {statistics.totalSent}</p>
         <p><strong>Messages Failed:</strong> {statistics.totalFailed}</p>
       </div>
@@ -112,7 +113,7 @@ export default function MessageLogsPage() {
           onClick={sendMessages}
           className="bg-blue-500 text-white px-4 py-2 rounded"
         >
-          Send Messages
+          Send Message
         </button>
       </div>
 

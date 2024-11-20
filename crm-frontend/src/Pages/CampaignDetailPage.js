@@ -13,7 +13,8 @@ export default function CampaignDetailPage() {
     useEffect(() => {
         async function fetchCampaignDetail() {
             try {
-                const campaignResponse = await axios.get(`http://localhost:3000/api/campaigns/${id}`);
+                // const campaignResponse = await axios.get(`http://localhost:3000/api/campaigns/${id}`);
+                const campaignResponse = await axios.get(`https://crm-management-system-1.onrender.com/api/campaigns/${id}`);
                 setCampaign(campaignResponse.data);
             } catch (error) {
                 console.error('Error fetching campaign details:', error);
@@ -27,7 +28,8 @@ export default function CampaignDetailPage() {
         async function fetchMessageLogs() {
             try {
                 setLoading(true);
-                const logsResponse = await axios.get(`http://localhost:3000/api/messages/logs?campaignId=${id}`);
+                // const logsResponse = await axios.get(`http://localhost:3000/api/messages/logs?campaignId=${id}`);
+                const logsResponse = await axios.get(`https://crm-management-system-1.onrender.com/api/messages/logs?campaignId=${id}`);
                 setMessageLogs(logsResponse.data);
                 setLoading(false);
             } catch (error) {
@@ -41,10 +43,10 @@ export default function CampaignDetailPage() {
     // Retry sending a failed message
     const retryMessage = async (logId) => {
         try {
-            await axios.post(`http://localhost:3000/api/messages/retry/${logId}`);
+            await axios.post(`https://crm-management-system-1.onrender.com/api/messages/retry/${logId}`);
             alert('Message retried successfully!');
             // Refresh message logs
-            const logsResponse = await axios.get(`http://localhost:3000/api/messages/logs?campaignId=${id}`);
+            const logsResponse = await axios.get(`https://crm-management-system-1.onrender.com/api/messages/logs?campaignId=${id}`);
             setMessageLogs(logsResponse.data);
         } catch (error) {
             console.error('Error retrying message:', error);
@@ -93,7 +95,7 @@ export default function CampaignDetailPage() {
                             <th className="border px-4 py-2">Log ID</th>
                             <th className="border px-4 py-2">Recipient</th>
                             <th className="border px-4 py-2">Status</th>
-                            <th className="border px-4 py-2">Actions</th>
+                            {/* <th className="border px-4 py-2">Actions</th> */}
                         </tr>
                     </thead>
                     <tbody>

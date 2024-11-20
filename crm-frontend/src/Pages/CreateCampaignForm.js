@@ -17,7 +17,7 @@ export default function CreateCampaignForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3000/api/campaigns', formData);
+            await axios.post('https://crm-management-system-1.onrender.com/api/campaigns', formData);
             alert('Campaign created successfully!');
         } catch (error) {
             console.error("Error creating campaign:", error);

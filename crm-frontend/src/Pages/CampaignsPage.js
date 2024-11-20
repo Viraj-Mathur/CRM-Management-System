@@ -10,7 +10,8 @@ export default function CampaignsPage() {
     useEffect(() => {
         async function fetchCampaigns() {
             try {
-                const response = await axios.get('http://localhost:3000/api/campaigns');
+                // const response = await axios.get('http://localhost:3000/api/campaigns');
+                const response = await axios.get('https://crm-management-system-1.onrender.com/api/campaigns');
                 setCampaigns(response.data);
                 setLoading(false);
             } catch (error) {
