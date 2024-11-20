@@ -15,7 +15,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Enable CORS with the appropriate origin
-app.use(cors({ origin: 'http://localhost:3001' })); // Adjust if the frontend runs on a different port
+// app.use(cors({ origin: 'http://localhost:3001' })); 
+app.use(cors({ origin: 'https://crm-management-system.vercel.app' })); 
 
 // Log environment variables for debugging purposes
 console.log("DB_HOST:", process.env.DB_HOST);
