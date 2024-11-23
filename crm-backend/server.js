@@ -9,13 +9,13 @@ const authRoutes = require('./routes/auth'); // Authentication routes
 const campaignRoutes = require('./routes/campaign'); // Campaign management routes
 const messageRoutes = require('./routes/messageRoutes'); // Message delivery routes
 const pool = require('./config/db'); // Database connection setup
+const { startSubscriber } = require('./services/subscriber'); // RabbitMQ subscriber setup
 
 // Initialize the Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Enable CORS with the appropriate origin
-// app.use(cors({ origin: 'http://localhost:3001' })); 
 app.use(cors({ origin: 'https://crm-management-system.vercel.app' })); 
 
 // Log environment variables for debugging purposes
@@ -47,6 +47,16 @@ app.use(passport.session());
     connection.release(); // Release the connection back to the pool
   } catch (error) {
     console.error('Unable to connect to the database:', error);
+  }
+})();
+
+// Start the RabbitMQ subscriber
+(async () => {
+  try {
+    await startSubscriber();
+    console.log('RabbitMQ subscriber started successfully');
+  } catch (error) {
+    console.error('Error starting RabbitMQ subscriber:', error);
   }
 })();
 

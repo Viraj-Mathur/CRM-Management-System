@@ -1,5 +1,4 @@
 const amqp = require('amqplib');
-
 const pool = require('../config/db'); // MySQL connection pool
 
 let buffer = []; // Buffer to hold messages
@@ -8,15 +7,29 @@ const INTERVAL = 5000; // Process every 5 seconds
 
 // Function to process the buffer and update the database
 const processBuffer = async () => {
-    if (buffer.length === 0) return;
+    if (buffer.length === 0) return; // Skip processing if the buffer is empty
 
     try {
         const query = 'UPDATE message_logs SET status = ? WHERE id = ?';
-        const promises = buffer.map(({ logId, status }) => pool.query(query, [status, logId]));
+        const connection = await pool.getConnection(); // Get MySQL connection from pool
 
-        await Promise.all(promises);
+        try {
+            await connection.beginTransaction(); // Start transaction
 
-        console.log(`Processed ${buffer.length} updates.`);
+            // Execute queries in batch
+            for (const { logId, status } of buffer) {
+                await connection.query(query, [status, logId]);
+            }
+
+            await connection.commit(); // Commit the transaction
+            console.log(`Processed ${buffer.length} updates.`);
+        } catch (err) {
+            await connection.rollback(); // Rollback on error
+            console.error('Error during transaction, rolled back:', err);
+        } finally {
+            connection.release(); // Release connection back to pool
+        }
+
         buffer = []; // Clear the buffer after processing
     } catch (error) {
         console.error('Error processing buffer:', error);
@@ -26,23 +39,28 @@ const processBuffer = async () => {
 // Start the subscriber
 const startSubscriber = async () => {
     try {
-        const connection = await amqp.connect('amqp://localhost');
-        const channel = await connection.createChannel();
-        const queue = 'delivery_status_updates';
+        const connection = await amqp.connect('amqp://localhost'); // RabbitMQ connection
+        const channel = await connection.createChannel(); // Create a channel
+        const queue = 'delivery_status_updates'; // Queue name
 
-        await channel.assertQueue(queue);
+        await channel.assertQueue(queue, { durable: true }); // Ensure the queue is durable
         console.log('Listening for messages on queue:', queue);
 
         // Listen for messages
         channel.consume(queue, (msg) => {
             if (msg !== null) {
-                const message = JSON.parse(msg.content.toString());
-                buffer.push(message); // Add message to buffer
-                channel.ack(msg);
+                try {
+                    const message = JSON.parse(msg.content.toString());
+                    buffer.push(message); // Add message to buffer
+                    channel.ack(msg); // Acknowledge the message
 
-                // Process the buffer if it reaches the batch size
-                if (buffer.length >= BATCH_SIZE) {
-                    processBuffer();
+                    // Process the buffer if it reaches the batch size
+                    if (buffer.length >= BATCH_SIZE) {
+                        processBuffer();
+                    }
+                } catch (error) {
+                    console.error('Error parsing message:', error);
+                    channel.nack(msg, false, false); // Negative acknowledgment for the message
                 }
             }
         });
@@ -55,3 +73,5 @@ const startSubscriber = async () => {
 };
 
 startSubscriber();
+
+module.exports = { startSubscriber };
