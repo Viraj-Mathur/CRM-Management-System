@@ -75,7 +75,7 @@ export default function MessageLogsPage() {
       if (response.status === 200) {
         alert(response.data.message); // Show success message
         const logsResponse = await axios.get(
-          `https://crm-management-system-1.onrender.com/sapi/messages/logs?campaignId=${id}`
+          `https://crm-management-system-1.onrender.com/api/messages/logs?campaignId=${id}`
         );
         setMessageLogs(logsResponse.data);
       } else {

@@ -24,7 +24,7 @@ const LoginPage = () => {
       return;
     }
     setError(""); // Clear previous errors if validation passed
-    const userData = { email, role: 'user' }; // Replace with real authentication logic
+    const userData = { email, role: 'user' }; 
     login(userData);
     navigate('/dashboard');
   };
@@ -39,7 +39,7 @@ const LoginPage = () => {
 
   const handleSignUp = () => {
     // Navigate to the sign-up page or trigger a sign-up modal
-    navigate('/signup'); // Replace '/signup' with the actual path or sign-up modal logic
+    navigate('/signup'); 
   };
 
   return (
