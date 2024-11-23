@@ -8,7 +8,7 @@ const getRandomStatus = () => (Math.random() < 0.9 ? 'SENT' : 'FAILED');
 // Publish a message to the queue
 const publishToQueue = async (queueName, message) => {
     try {
-        const connection = await amqp.connect('amqp://localhost');
+        const connection = await amqp.connect('amqps://idwohalj:Wpo8f0FpgJw37OgK2duJZXsFOkFs83jh@sparrow.rmq.cloudamqp.com/idwohalj');
         const channel = await connection.createChannel();
         await channel.assertQueue(queueName, { durable: true });
         channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)), {

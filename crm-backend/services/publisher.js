@@ -4,7 +4,7 @@ const amqp = require('amqplib');
 const publishMessage = async (queueName, message) => {
     try {
         // Connect to RabbitMQ server
-        const connection = await amqp.connect('amqp://localhost');
+        const connection = await amqp.connect('amqps://idwohalj:Wpo8f0FpgJw37OgK2duJZXsFOkFs83jh@sparrow.rmq.cloudamqp.com/idwohalj');
         const channel = await connection.createChannel();
 
         // Assert that the queue exists

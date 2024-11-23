@@ -39,7 +39,7 @@ const processBuffer = async () => {
 // Start the subscriber
 const startSubscriber = async () => {
     try {
-        const connection = await amqp.connect('amqp://localhost'); // RabbitMQ connection
+        const connection = await amqp.connect('amqps://idwohalj:Wpo8f0FpgJw37OgK2duJZXsFOkFs83jh@sparrow.rmq.cloudamqp.com/idwohalj'); // RabbitMQ connection
         const channel = await connection.createChannel(); // Create a channel
         const queue = 'delivery_status_updates'; // Queue name
 
