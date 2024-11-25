@@ -75,7 +75,10 @@ const CustomerPage = () => {
   };
 
   const addFilterCondition = () => {
-    setFilterConditions([...filterConditions, { field: 'total_spent', operator: '>', value: '' }]);
+    setFilterConditions([
+      ...filterConditions,
+      { field: 'total_spent', operator: '>', value: '', conditions: [], logic: 'AND' }
+    ]);
   };
 
   const removeFilterCondition = (index) => {
@@ -91,38 +94,57 @@ const CustomerPage = () => {
   };
 
   const applyFilters = () => {
-    const filtered = customers.filter((customer) => {
-      const results = filterConditions.map((condition) => {
-        const { field, operator, value } = condition;
-        const customerValue = field === 'last_visit' ? new Date(customer[field]) : customer[field];
-        const comparisonValue = field === 'last_visit'
+    const evaluateCondition = (customer, condition) => {
+      const { field, operator, value } = condition;
+      let customerValue;
+
+      if (field === 'last_visit') {
+        customerValue = new Date(customer[field]);
+      } else {
+        customerValue = customer[field];
+      }
+
+      const comparisonValue =
+        field === 'last_visit'
           ? new Date(new Date().setMonth(new Date().getMonth() - parseInt(value)))
+          : isNaN(value)
+          ? value
           : parseFloat(value);
 
-        switch (operator) {
-          case '>':
-            return customerValue > comparisonValue;
-          case '<':
-            return customerValue < comparisonValue;
-          case '>=':
-            return customerValue >= comparisonValue;
-          case '<=':
-            return customerValue <= comparisonValue;
-          case '==':
-            return customerValue === comparisonValue;
-          case '!=':
-            return customerValue !== comparisonValue;
-          default:
-            return false;
-        }
-      });
+      switch (operator) {
+        case '>':
+          return customerValue > comparisonValue;
+        case '<':
+          return customerValue < comparisonValue;
+        case '>=':
+          return customerValue >= comparisonValue;
+        case '<=':
+          return customerValue <= comparisonValue;
+        case '==':
+          return customerValue === comparisonValue;
+        case '!=':
+          return customerValue !== comparisonValue;
+        default:
+          return false;
+      }
+    };
 
-      // Combine the results using the selected logic
+    const evaluateFilters = (customer, conditions, logic) => {
+      const results = conditions.map((condition) =>
+        Array.isArray(condition.conditions)
+          ? evaluateFilters(customer, condition.conditions, condition.logic) // Nested conditions
+          : evaluateCondition(customer, condition)
+      );
+
       return logic === 'AND'
         ? results.every((result) => result === true)
         : results.some((result) => result === true);
-    });
-    
+    };
+
+    const filtered = customers.filter((customer) =>
+      evaluateFilters(customer, filterConditions, logic)
+    );
+
     setFilteredCustomers(filtered);
     setShowFilterBuilder(false);
   };
