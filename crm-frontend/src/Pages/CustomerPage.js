@@ -30,8 +30,8 @@ const CustomerPage = () => {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     const query = e.target.value.toLowerCase();
-    setFilteredCustomers(customers.filter((customer) => 
-      customer.name.toLowerCase().includes(query) || 
+    setFilteredCustomers(customers.filter((customer) =>
+      customer.name.toLowerCase().includes(query) ||
       customer.email.toLowerCase().includes(query)
     ));
   };
@@ -39,10 +39,10 @@ const CustomerPage = () => {
   const handleAddEditCustomer = async (customer) => {
     try {
       const method = customer.id ? 'PUT' : 'POST';
-      const url = customer.id 
+      const url = customer.id
         ? `https://crm-management-system-1.onrender.com/api/customers/${customer.id}`
         : 'https://crm-management-system-1.onrender.com/api/customers';
-      
+
       const response = await axios({
         method,
         url,
@@ -77,7 +77,7 @@ const CustomerPage = () => {
   const addFilterCondition = () => {
     setFilterConditions([
       ...filterConditions,
-      { field: 'total_spent', operator: '>', value: '', conditions: [], logic: 'AND' }
+      { field: 'total_spent', operator: '>', value: '' }
     ]);
   };
 
@@ -96,43 +96,31 @@ const CustomerPage = () => {
   const applyFilters = () => {
     const evaluateCondition = (customer, condition) => {
       const { field, operator, value } = condition;
-      let customerValue;
+      let customerValue = customer[field];
 
-      if (field === 'last_visit') {
+      if (field === 'last_visit' && value) {
         customerValue = new Date(customer[field]);
-      } else {
-        customerValue = customer[field];
+        const comparisonDate = new Date(new Date().setMonth(new Date().getMonth() - parseInt(value)));
+        if (operator === '>') return customerValue > comparisonDate;
+        if (operator === '<') return customerValue < comparisonDate;
+        if (operator === '==') return customerValue.getTime() === comparisonDate.getTime();
+        if (operator === '!=') return customerValue.getTime() !== comparisonDate.getTime();
       }
 
-      const comparisonValue =
-        field === 'last_visit'
-          ? new Date(new Date().setMonth(new Date().getMonth() - parseInt(value)))
-          : isNaN(value)
-          ? value
-          : parseFloat(value);
+      if (operator === '>') return parseFloat(customerValue) > parseFloat(value);
+      if (operator === '<') return parseFloat(customerValue) < parseFloat(value);
+      if (operator === '>=') return parseFloat(customerValue) >= parseFloat(value);
+      if (operator === '<=') return parseFloat(customerValue) <= parseFloat(value);
+      if (operator === '==') return customerValue.toString() === value.toString();
+      if (operator === '!=') return customerValue.toString() !== value.toString();
 
-      switch (operator) {
-        case '>':
-          return customerValue > comparisonValue;
-        case '<':
-          return customerValue < comparisonValue;
-        case '>=':
-          return customerValue >= comparisonValue;
-        case '<=':
-          return customerValue <= comparisonValue;
-        case '==':
-          return customerValue === comparisonValue;
-        case '!=':
-          return customerValue !== comparisonValue;
-        default:
-          return false;
-      }
+      return false;
     };
 
     const evaluateFilters = (customer, conditions, logic) => {
       const results = conditions.map((condition) =>
         Array.isArray(condition.conditions)
-          ? evaluateFilters(customer, condition.conditions, condition.logic) // Nested conditions
+          ? evaluateFilters(customer, condition.conditions, condition.logic)
           : evaluateCondition(customer, condition)
       );
 
@@ -247,11 +235,11 @@ const CustomerPage = () => {
                   <option value="!=">!=</option>
                 </select>
                 <input
-                  type={condition.field === 'last_visit' ? 'number' : 'text'}
+                  type={['total_spent', 'visits'].includes(condition.field) ? 'number' : 'text'}
                   value={condition.value}
                   onChange={(e) => handleFilterConditionChange(index, 'value', e.target.value)}
                   className="p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter value"
+                  placeholder={`Enter ${condition.field}`}
                 />
                 {filterConditions.length > 1 && (
                   <button onClick={() => removeFilterCondition(index)} className="text-red-500 font-semibold hover:underline">Remove</button>
